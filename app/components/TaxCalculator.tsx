@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback } from 'react';
 
 interface FormData {
   salary: string;
@@ -60,15 +60,6 @@ const formatCurrency = (value: string): string => {
   return cleanValue;
 };
 
-const formatIndianCurrency = (amount: number): string => {
-  return new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  }).format(amount);
-};
-
 export default function TaxCalculator() {
   const [formData, setFormData] = useState<FormData>({
     salary: '',
@@ -87,7 +78,6 @@ export default function TaxCalculator() {
   });
 
   const [errors, setErrors] = useState<ValidationErrors>({});
-  const [isCalculating, setIsCalculating] = useState(false);
   const [result, setResult] = useState<TaxResult | null>(null);
 
   const validateInput = useCallback((name: string, value: string): string | null => {
