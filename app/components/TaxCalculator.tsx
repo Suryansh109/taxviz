@@ -225,10 +225,10 @@ export default function TaxCalculator() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Income Section */}
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">Income Details</h2>
-          <div className="space-y-4">
+          <h2 className="text-xl font-semibold mb-6 text-gray-800">Income Details</h2>
+          <div className="space-y-6">
             <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-              <h3 className="text-lg font-semibold text-gray-800">Employment Income</h3>
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Employment Income</h3>
               <div className="flex flex-col">
                 <label className="text-sm font-medium text-gray-700 mb-1">Salary</label>
                 <input
@@ -236,7 +236,7 @@ export default function TaxCalculator() {
                   name="salary"
                   value={formData.salary}
                   onChange={handleInputChange}
-                  className="border rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="0"
                 />
               </div>
@@ -247,14 +247,14 @@ export default function TaxCalculator() {
                   name="tds"
                   value={formData.tds}
                   onChange={handleInputChange}
-                  className="border rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="0"
                 />
               </div>
             </div>
 
             <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-              <h3 className="text-lg font-semibold text-gray-800">Other Income Sources</h3>
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Other Income Sources</h3>
               <div className="flex flex-col">
                 <label className="text-sm font-medium text-gray-700 mb-1">Business Income</label>
                 <input
@@ -262,7 +262,7 @@ export default function TaxCalculator() {
                   name="businessIncome"
                   value={formData.businessIncome}
                   onChange={handleInputChange}
-                  className="border rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="0"
                 />
               </div>
@@ -273,7 +273,7 @@ export default function TaxCalculator() {
                   name="rentalIncome"
                   value={formData.rentalIncome}
                   onChange={handleInputChange}
-                  className="border rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="0"
                 />
               </div>
@@ -284,7 +284,7 @@ export default function TaxCalculator() {
                   name="otherIncome"
                   value={formData.otherIncome}
                   onChange={handleInputChange}
-                  className="border rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="0"
                 />
               </div>
@@ -294,43 +294,47 @@ export default function TaxCalculator() {
 
         {/* Deductions Section */}
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">Deductions</h2>
-          <div className="space-y-4">
-            <div className="flex flex-col">
-              <label className="text-sm font-medium text-gray-700 mb-1">Section 80C (Max: ₹1,50,000)</label>
-              <input
-                type="text"
-                name="section80C"
-                value={formData.section80C}
-                onChange={handleInputChange}
-                className="border rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="0"
-              />
-            </div>
-            <div className="flex flex-col">
-              <label className="text-sm font-medium text-gray-700 mb-1">Section 80D (Max: ₹75,000)</label>
-              <input
-                type="text"
-                name="section80D"
-                value={formData.section80D}
-                onChange={handleInputChange}
-                className="border rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="0"
-              />
-            </div>
-            <div className="flex flex-col">
-              <label className="text-sm font-medium text-gray-700 mb-1">Section 80TTA (Max: ₹10,000)</label>
-              <input
-                type="text"
-                name="section80TTA"
-                value={formData.section80TTA}
-                onChange={handleInputChange}
-                className="border rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="0"
-              />
-            </div>
+          <h2 className="text-xl font-semibold mb-6 text-gray-800">Deductions</h2>
+          <div className="space-y-6">
             <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-              <h3 className="text-lg font-semibold text-gray-800">HRA Details</h3>
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Standard Deductions</h3>
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">Section 80C (Max: ₹1,50,000)</label>
+                <input
+                  type="text"
+                  name="section80C"
+                  value={formData.section80C}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="0"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">Section 80D (Max: ₹75,000)</label>
+                <input
+                  type="text"
+                  name="section80D"
+                  value={formData.section80D}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="0"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">Section 80TTA (Max: ₹10,000)</label>
+                <input
+                  type="text"
+                  name="section80TTA"
+                  value={formData.section80TTA}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">HRA Details</h3>
               <div className="flex flex-col">
                 <label className="text-sm font-medium text-gray-700 mb-1">HRA Received</label>
                 <input
@@ -338,7 +342,7 @@ export default function TaxCalculator() {
                   name="hra"
                   value={formData.hra}
                   onChange={handleInputChange}
-                  className="border rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="0"
                 />
               </div>
@@ -349,7 +353,7 @@ export default function TaxCalculator() {
                   name="actualRent"
                   value={formData.actualRent}
                   onChange={handleInputChange}
-                  className="border rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="0"
                 />
               </div>
@@ -359,34 +363,38 @@ export default function TaxCalculator() {
                   name="cityTier"
                   value={formData.cityTier}
                   onChange={handleInputChange}
-                  className="border rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
                   <option value="metro">Metro (50% of Basic)</option>
                   <option value="non-metro">Non-Metro (40% of Basic)</option>
                 </select>
               </div>
             </div>
-            <div className="flex flex-col">
-              <label className="text-sm font-medium text-gray-700 mb-1">LTA</label>
-              <input
-                type="text"
-                name="lta"
-                value={formData.lta}
-                onChange={handleInputChange}
-                className="border rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="0"
-              />
-            </div>
-            <div className="flex flex-col">
-              <label className="text-sm font-medium text-gray-700 mb-1">NPS (Max: ₹50,000)</label>
-              <input
-                type="text"
-                name="nps"
-                value={formData.nps}
-                onChange={handleInputChange}
-                className="border rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="0"
-              />
+
+            <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Other Deductions</h3>
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">LTA</label>
+                <input
+                  type="text"
+                  name="lta"
+                  value={formData.lta}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="0"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">NPS (Max: ₹50,000)</label>
+                <input
+                  type="text"
+                  name="nps"
+                  value={formData.nps}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="0"
+                />
+              </div>
             </div>
           </div>
         </div>
