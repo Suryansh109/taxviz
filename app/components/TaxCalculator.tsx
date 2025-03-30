@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 
 interface FormData {
   salary: string;
@@ -39,6 +39,36 @@ interface TaxResult {
   };
 }
 
+interface ValidationErrors {
+  [key: string]: string;
+}
+
+// Utility functions
+const formatCurrency = (value: string): string => {
+  // Remove any non-digit characters except decimal point
+  const cleanValue = value.replace(/[^\d.]/g, '');
+  
+  // Ensure only one decimal point
+  const parts = cleanValue.split('.');
+  if (parts.length > 2) return parts[0] + '.' + parts.slice(1).join('');
+  
+  // Limit to 2 decimal places
+  if (parts.length === 2) {
+    return parts[0] + '.' + parts[1].slice(0, 2);
+  }
+  
+  return cleanValue;
+};
+
+const formatIndianCurrency = (amount: number): string => {
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(amount);
+};
+
 export default function TaxCalculator() {
   const [formData, setFormData] = useState<FormData>({
     salary: '',
@@ -56,15 +86,58 @@ export default function TaxCalculator() {
     tds: '',
   });
 
+  const [errors, setErrors] = useState<ValidationErrors>({});
+  const [isCalculating, setIsCalculating] = useState(false);
   const [result, setResult] = useState<TaxResult | null>(null);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const validateInput = useCallback((name: string, value: string): string | null => {
+    if (value === '') return null;
+    
+    const numValue = parseFloat(value);
+    if (isNaN(numValue)) return 'Please enter a valid number';
+    if (numValue < 0) return 'Amount cannot be negative';
+    
+    switch (name) {
+      case 'section80C':
+        if (numValue > 150000) return 'Maximum limit is ₹1,50,000';
+        break;
+      case 'section80D':
+        if (numValue > 75000) return 'Maximum limit is ₹75,000';
+        break;
+      case 'section80TTA':
+        if (numValue > 10000) return 'Maximum limit is ₹10,000';
+        break;
+      case 'nps':
+        if (numValue > 50000) return 'Maximum limit is ₹50,000';
+        break;
+      case 'lta':
+        if (numValue > 0 && !parseFloat(formData.salary)) 
+          return 'LTA cannot be claimed without salary income';
+        break;
+    }
+    
+    return null;
+  }, [formData.salary]);
+
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    
+    // Format currency for number inputs
+    const formattedValue = e.target.type === 'text' ? formatCurrency(value) : value;
+    
+    // Validate input
+    const error = validateInput(name, formattedValue);
+    
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: formattedValue
     }));
-  };
+    
+    setErrors(prev => ({
+      ...prev,
+      [name]: error || ''
+    }));
+  }, [validateInput]);
 
   const calculateHRAExemption = (
     salary: number,
