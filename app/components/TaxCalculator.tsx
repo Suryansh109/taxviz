@@ -324,7 +324,7 @@ export default function TaxCalculator() {
                   value={formData.salary}
                   onChange={handleInputChange}
                   className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="0"
+                  placeholder="₹0"
                 />
                 {errors.salary && (
                   <p className="mt-1 text-sm text-red-600">{errors.salary}</p>
@@ -338,7 +338,7 @@ export default function TaxCalculator() {
                   value={formData.tds}
                   onChange={handleInputChange}
                   className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="0"
+                  placeholder="₹0"
                 />
                 {errors.tds && (
                   <p className="mt-1 text-sm text-red-600">{errors.tds}</p>
@@ -356,7 +356,7 @@ export default function TaxCalculator() {
                   value={formData.businessIncome}
                   onChange={handleInputChange}
                   className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="0"
+                  placeholder="₹0"
                 />
                 {errors.businessIncome && (
                   <p className="mt-1 text-sm text-red-600">{errors.businessIncome}</p>
@@ -370,7 +370,7 @@ export default function TaxCalculator() {
                   value={formData.rentalIncome}
                   onChange={handleInputChange}
                   className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="0"
+                  placeholder="₹0"
                 />
                 {errors.rentalIncome && (
                   <p className="mt-1 text-sm text-red-600">{errors.rentalIncome}</p>
@@ -384,7 +384,7 @@ export default function TaxCalculator() {
                   value={formData.otherIncome}
                   onChange={handleInputChange}
                   className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="0"
+                  placeholder="₹0"
                 />
                 {errors.otherIncome && (
                   <p className="mt-1 text-sm text-red-600">{errors.otherIncome}</p>
@@ -408,7 +408,7 @@ export default function TaxCalculator() {
                   value={formData.section80C}
                   onChange={handleInputChange}
                   className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="0"
+                  placeholder="₹0"
                 />
               </div>
               <div className="flex flex-col">
@@ -419,7 +419,7 @@ export default function TaxCalculator() {
                   value={formData.section80D}
                   onChange={handleInputChange}
                   className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="0"
+                  placeholder="₹0"
                 />
               </div>
               <div className="flex flex-col">
@@ -430,77 +430,13 @@ export default function TaxCalculator() {
                   value={formData.section80TTA}
                   onChange={handleInputChange}
                   className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="0"
+                  placeholder="₹0"
                 />
               </div>
             </div>
 
             <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">HRA Details</h3>
-              <div className="flex flex-col">
-                <label className="text-sm font-medium text-gray-700 mb-1">HRA Received</label>
-                <input
-                  type="text"
-                  name="hra"
-                  value={formData.hra}
-                  onChange={handleInputChange}
-                  className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="0"
-                />
-              </div>
-              <div className="flex flex-col">
-                <label className="text-sm font-medium text-gray-700 mb-1">Actual Rent Paid</label>
-                <input
-                  type="text"
-                  name="actualRent"
-                  value={formData.actualRent}
-                  onChange={handleInputChange}
-                  className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="0"
-                />
-              </div>
-              <div className="flex flex-col">
-                <label className="text-sm font-medium text-gray-700 mb-1">City Type</label>
-                <select
-                  name="cityTier"
-                  value={formData.cityTier}
-                  onChange={handleInputChange}
-                  className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="metro">Metro (50% of Basic)</option>
-                  <option value="non-metro">Non-Metro (40% of Basic)</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">Other Deductions</h3>
-              <div className="flex flex-col">
-                <label className="text-sm font-medium text-gray-700 mb-1">LTA</label>
-                <input
-                  type="text"
-                  name="lta"
-                  value={formData.lta}
-                  onChange={handleInputChange}
-                  className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="0"
-                />
-              </div>
-              <div className="flex flex-col">
-                <label className="text-sm font-medium text-gray-700 mb-1">NPS (Max: ₹50,000)</label>
-                <input
-                  type="text"
-                  name="nps"
-                  value={formData.nps}
-                  onChange={handleInputChange}
-                  className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="0"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">Home Loan Benefits</h3>
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Home Loan Details</h3>
               <div className="flex flex-col">
                 <label className="text-sm font-medium text-gray-700 mb-1">Principal Repayment (80C)</label>
                 <input
@@ -509,7 +445,7 @@ export default function TaxCalculator() {
                   value={formData.homeLoanPrincipal}
                   onChange={handleInputChange}
                   className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="0"
+                  placeholder="₹0"
                 />
                 {errors.homeLoanPrincipal && (
                   <p className="mt-1 text-sm text-red-600">{errors.homeLoanPrincipal}</p>
@@ -523,7 +459,7 @@ export default function TaxCalculator() {
                   value={formData.homeLoanInterest}
                   onChange={handleInputChange}
                   className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="0"
+                  placeholder="₹0"
                 />
                 {errors.homeLoanInterest && (
                   <p className="mt-1 text-sm text-red-600">{errors.homeLoanInterest}</p>
@@ -557,7 +493,7 @@ export default function TaxCalculator() {
                       value={formData.propertyValue}
                       onChange={handleInputChange}
                       className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="0"
+                      placeholder="₹0"
                     />
                     {errors.propertyValue && (
                       <p className="mt-1 text-sm text-red-600">{errors.propertyValue}</p>
@@ -578,6 +514,70 @@ export default function TaxCalculator() {
                   </div>
                 </>
               )}
+            </div>
+
+            <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">HRA Details</h3>
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">HRA Received</label>
+                <input
+                  type="text"
+                  name="hra"
+                  value={formData.hra}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="₹0"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">Actual Rent Paid</label>
+                <input
+                  type="text"
+                  name="actualRent"
+                  value={formData.actualRent}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="₹0"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">City Type</label>
+                <select
+                  name="cityTier"
+                  value={formData.cityTier}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="metro">Metro (50% of Basic)</option>
+                  <option value="non-metro">Non-Metro (40% of Basic)</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Other Deductions</h3>
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">LTA</label>
+                <input
+                  type="text"
+                  name="lta"
+                  value={formData.lta}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="₹0"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">NPS (Max: ₹50,000)</label>
+                <input
+                  type="text"
+                  name="nps"
+                  value={formData.nps}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="₹0"
+                />
+              </div>
             </div>
           </div>
         </div>
