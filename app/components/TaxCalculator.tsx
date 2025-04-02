@@ -454,7 +454,7 @@ export default function TaxCalculator() {
             <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
               <h3 className="text-lg font-semibold text-gray-800 mb-4">Home Loan Details</h3>
               <div className="flex flex-col">
-                <label className="text-sm font-medium text-gray-700 mb-1">Principal Repayment (80C)</label>
+                <label className="text-sm font-medium text-gray-700 mb-1">Principal Repayment (Part of 80C)</label>
                 <input
                   type="text"
                   name="homeLoanPrincipal"
