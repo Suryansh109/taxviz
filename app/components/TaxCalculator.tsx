@@ -50,23 +50,23 @@ interface TaxResult {
 }
 
 interface ValidationErrors {
-  [key: string]: string | undefined;
-  salary?: string;
-  businessIncome?: string;
-  rentalIncome?: string;
-  otherIncome?: string;
-  section80C?: string;
-  section80D?: string;
-  section80TTA?: string;
-  hra?: string;
-  actualRent?: string;
-  lta?: string;
-  nps?: string;
-  tds?: string;
-  homeLoanPrincipal?: string;
-  homeLoanInterest?: string;
-  propertyValue?: string;
-  loanSanctionDate?: string;
+  [key: string]: string | null | undefined;
+  salary?: string | null;
+  businessIncome?: string | null;
+  rentalIncome?: string | null;
+  otherIncome?: string | null;
+  section80C?: string | null;
+  section80D?: string | null;
+  section80TTA?: string | null;
+  hra?: string | null;
+  actualRent?: string | null;
+  lta?: string | null;
+  nps?: string | null;
+  tds?: string | null;
+  homeLoanPrincipal?: string | null;
+  homeLoanInterest?: string | null;
+  propertyValue?: string | null;
+  loanSanctionDate?: string | null;
 }
 
 // Utility functions
@@ -84,6 +84,30 @@ const formatCurrency = (value: string): string => {
   }
   
   return cleanValue;
+};
+
+const formatNumberWithCommas = (value: string): string => {
+  // If empty string, return as is
+  if (!value) return '';
+  
+  // Remove any non-digit characters except decimal point
+  const cleanValue = value.replace(/[^\d.]/g, '');
+  
+  // Handle empty string after cleaning
+  if (!cleanValue) return '';
+  
+  // Split into integer and decimal parts
+  const parts = cleanValue.split('.');
+  const integerPart = parts[0];
+  
+  // Add commas to integer part
+  const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  
+  // Return with decimal part if it exists
+  if (parts.length > 1) {
+    return `${formattedInteger}.${parts[1].slice(0, 2)}`;
+  }
+  return formattedInteger;
 };
 
 export default function TaxCalculator() {
@@ -110,11 +134,16 @@ export default function TaxCalculator() {
 
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [result, setResult] = useState<TaxResult | null>(null);
+  const [isCalculating, setIsCalculating] = useState(false);
+  const [showResults, setShowResults] = useState(false);
 
   const validateInput = useCallback((name: string, value: string): string | null => {
-    if (value === '') return null;
+    if (!value) return null;
     
-    const numValue = parseFloat(value);
+    // Remove commas before parsing
+    const cleanValue = value.replace(/,/g, '');
+    const numValue = parseFloat(cleanValue);
+    
     if (isNaN(numValue)) return 'Please enter a valid number';
     if (numValue < 0) return 'Amount cannot be negative';
     
@@ -132,32 +161,79 @@ export default function TaxCalculator() {
         if (numValue > 50000) return 'Maximum limit is ₹50,000';
         break;
       case 'lta':
-        if (numValue > 0 && !parseFloat(formData.salary)) 
+        if (numValue > 0 && !parseFloat(formData.salary.replace(/,/g, ''))) 
           return 'LTA cannot be claimed without salary income';
+        break;
+      case 'homeLoanInterest':
+        if (numValue > 200000) return 'Maximum interest deduction is ₹2,00,000';
+        break;
+      case 'propertyValue':
+        if (formData.isFirstTimeBuyer && numValue > 5000000) 
+          return 'Property value should not exceed ₹50,00,000 for 80EE benefit';
+        break;
+      case 'loanSanctionDate':
+        if (formData.isFirstTimeBuyer && !value) 
+          return 'Loan sanction date is required for first-time buyers';
+        if (formData.isFirstTimeBuyer && new Date(value) < new Date('2019-04-01'))
+          return 'Loan must be sanctioned after April 1, 2019 for 80EE benefit';
         break;
     }
     
     return null;
-  }, [formData.salary]);
+  }, [formData.salary, formData.isFirstTimeBuyer]);
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     
-    // Format currency for number inputs
-    const formattedValue = e.target.type === 'text' ? formatCurrency(value) : value;
-    
-    // Validate input
-    const error = validateInput(name, formattedValue);
-    
+    // Handle checkbox separately
+    if (name === 'isFirstTimeBuyer') {
+      setFormData(prev => ({
+        ...prev,
+        [name]: (e.target as HTMLInputElement).checked
+      }));
+      return;
+    }
+
+    // Handle date input separately
+    if (name === 'loanSanctionDate') {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+      return;
+    }
+
+    // Handle city tier select separately
+    if (name === 'cityTier') {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value as 'metro' | 'non-metro'
+      }));
+      return;
+    }
+
+    // For numeric inputs
+    const formattedValue = value === '' ? '' : formatNumberWithCommas(value);
     setFormData(prev => ({
       ...prev,
       [name]: formattedValue
     }));
-    
-    setErrors(prev => ({
-      ...prev,
-      [name]: error || ''
-    }));
+
+    // Validate the input
+    const error = validateInput(name, value.replace(/,/g, ''));
+    if (error !== null) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: error
+      }));
+    } else {
+      // Remove the error if validation passes
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
   }, [validateInput]);
 
   const calculateHRAExemption = (
@@ -196,22 +272,28 @@ export default function TaxCalculator() {
     };
   };
 
-  const calculateTax = () => {
+  const calculateTax = async () => {
+    setIsCalculating(true);
+    setShowResults(false);
+    
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
     const values = {
-      salary: parseFloat(formData.salary) || 0,
-      businessIncome: parseFloat(formData.businessIncome) || 0,
-      rentalIncome: parseFloat(formData.rentalIncome) || 0,
-      otherIncome: parseFloat(formData.otherIncome) || 0,
-      section80C: parseFloat(formData.section80C) || 0,
-      section80D: parseFloat(formData.section80D) || 0,
-      section80TTA: parseFloat(formData.section80TTA) || 0,
-      hra: parseFloat(formData.hra) || 0,
-      actualRent: parseFloat(formData.actualRent) || 0,
-      lta: parseFloat(formData.lta) || 0,
-      nps: parseFloat(formData.nps) || 0,
-      tds: parseFloat(formData.tds) || 0,
-      homeLoanPrincipal: parseFloat(formData.homeLoanPrincipal) || 0,
-      homeLoanInterest: parseFloat(formData.homeLoanInterest) || 0,
+      salary: parseFloat(formData.salary.replace(/,/g, '')) || 0,
+      businessIncome: parseFloat(formData.businessIncome.replace(/,/g, '')) || 0,
+      rentalIncome: parseFloat(formData.rentalIncome.replace(/,/g, '')) || 0,
+      otherIncome: parseFloat(formData.otherIncome.replace(/,/g, '')) || 0,
+      section80C: parseFloat(formData.section80C.replace(/,/g, '')) || 0,
+      section80D: parseFloat(formData.section80D.replace(/,/g, '')) || 0,
+      section80TTA: parseFloat(formData.section80TTA.replace(/,/g, '')) || 0,
+      hra: parseFloat(formData.hra.replace(/,/g, '')) || 0,
+      actualRent: parseFloat(formData.actualRent.replace(/,/g, '')) || 0,
+      lta: parseFloat(formData.lta.replace(/,/g, '')) || 0,
+      nps: parseFloat(formData.nps.replace(/,/g, '')) || 0,
+      tds: parseFloat(formData.tds.replace(/,/g, '')) || 0,
+      homeLoanPrincipal: parseFloat(formData.homeLoanPrincipal.replace(/,/g, '')) || 0,
+      homeLoanInterest: parseFloat(formData.homeLoanInterest.replace(/,/g, '')) || 0,
+      propertyValue: parseFloat(formData.propertyValue.replace(/,/g, '')) || 0,
     };
 
     const grossIncome = values.salary + values.businessIncome + 
