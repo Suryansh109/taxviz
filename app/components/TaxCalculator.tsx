@@ -340,7 +340,7 @@ export default function TaxCalculator() {
                   value={formData.salary}
                   onChange={handleInputChange}
                   className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="₹0"
+                  placeholder="0"
                 />
                 {errors.salary && (
                   <p className="mt-1 text-sm text-red-600">{errors.salary}</p>
@@ -354,7 +354,7 @@ export default function TaxCalculator() {
                   value={formData.tds}
                   onChange={handleInputChange}
                   className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="₹0"
+                  placeholder="0"
                 />
                 {errors.tds && (
                   <p className="mt-1 text-sm text-red-600">{errors.tds}</p>
@@ -372,7 +372,7 @@ export default function TaxCalculator() {
                   value={formData.businessIncome}
                   onChange={handleInputChange}
                   className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="₹0"
+                  placeholder="0"
                 />
                 {errors.businessIncome && (
                   <p className="mt-1 text-sm text-red-600">{errors.businessIncome}</p>
@@ -386,7 +386,7 @@ export default function TaxCalculator() {
                   value={formData.rentalIncome}
                   onChange={handleInputChange}
                   className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="₹0"
+                  placeholder="0"
                 />
                 {errors.rentalIncome && (
                   <p className="mt-1 text-sm text-red-600">{errors.rentalIncome}</p>
@@ -400,7 +400,7 @@ export default function TaxCalculator() {
                   value={formData.otherIncome}
                   onChange={handleInputChange}
                   className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="₹0"
+                  placeholder="0"
                 />
                 {errors.otherIncome && (
                   <p className="mt-1 text-sm text-red-600">{errors.otherIncome}</p>
@@ -424,7 +424,7 @@ export default function TaxCalculator() {
                   value={formData.section80C}
                   onChange={handleInputChange}
                   className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="₹0"
+                  placeholder="0"
                 />
               </div>
               <div className="flex flex-col">
@@ -435,7 +435,7 @@ export default function TaxCalculator() {
                   value={formData.section80D}
                   onChange={handleInputChange}
                   className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="₹0"
+                  placeholder="0"
                 />
               </div>
               <div className="flex flex-col">
@@ -446,7 +446,7 @@ export default function TaxCalculator() {
                   value={formData.section80TTA}
                   onChange={handleInputChange}
                   className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="₹0"
+                  placeholder="0"
                 />
               </div>
             </div>
@@ -461,7 +461,7 @@ export default function TaxCalculator() {
                   value={formData.homeLoanPrincipal}
                   onChange={handleInputChange}
                   className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="₹0"
+                  placeholder="0"
                 />
                 {errors.homeLoanPrincipal && (
                   <p className="mt-1 text-sm text-red-600">{errors.homeLoanPrincipal}</p>
@@ -475,7 +475,7 @@ export default function TaxCalculator() {
                   value={formData.homeLoanInterest}
                   onChange={handleInputChange}
                   className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="₹0"
+                  placeholder="0"
                 />
                 {errors.homeLoanInterest && (
                   <p className="mt-1 text-sm text-red-600">{errors.homeLoanInterest}</p>
@@ -509,7 +509,7 @@ export default function TaxCalculator() {
                       value={formData.propertyValue}
                       onChange={handleInputChange}
                       className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="₹0"
+                      placeholder="0"
                     />
                     {errors.propertyValue && (
                       <p className="mt-1 text-sm text-red-600">{errors.propertyValue}</p>
@@ -542,7 +542,7 @@ export default function TaxCalculator() {
                   value={formData.hra}
                   onChange={handleInputChange}
                   className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="₹0"
+                  placeholder="0"
                 />
               </div>
               <div className="flex flex-col">
@@ -553,7 +553,7 @@ export default function TaxCalculator() {
                   value={formData.actualRent}
                   onChange={handleInputChange}
                   className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="₹0"
+                  placeholder="0"
                 />
               </div>
               <div className="flex flex-col">
@@ -580,7 +580,7 @@ export default function TaxCalculator() {
                   value={formData.lta}
                   onChange={handleInputChange}
                   className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="₹0"
+                  placeholder="0"
                 />
               </div>
               <div className="flex flex-col">
@@ -591,7 +591,7 @@ export default function TaxCalculator() {
                   value={formData.nps}
                   onChange={handleInputChange}
                   className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="₹0"
+                  placeholder="0"
                 />
               </div>
             </div>
