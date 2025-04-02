@@ -50,7 +50,23 @@ interface TaxResult {
 }
 
 interface ValidationErrors {
-  [key: string]: string;
+  [key: string]: string | undefined;
+  salary?: string;
+  businessIncome?: string;
+  rentalIncome?: string;
+  otherIncome?: string;
+  section80C?: string;
+  section80D?: string;
+  section80TTA?: string;
+  hra?: string;
+  actualRent?: string;
+  lta?: string;
+  nps?: string;
+  tds?: string;
+  homeLoanPrincipal?: string;
+  homeLoanInterest?: string;
+  propertyValue?: string;
+  loanSanctionDate?: string;
 }
 
 // Utility functions
