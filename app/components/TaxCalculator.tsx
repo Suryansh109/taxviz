@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 
 interface FormData {
   salary: string;
@@ -35,14 +35,14 @@ interface TaxResult {
   tdsAmount: number;
   remainingTaxOld: number;
   remainingTaxNew: number;
-  hraBreakdown?: {
+  hraBreakdown: {
     actualHRA: number;
     rentPaid: number;
     excessRent: number;
     salaryPercent: number;
     eligible: number;
   };
-  homeLoanBreakdown?: {
+  homeLoanBreakdown: {
     principalDeduction: number;
     interestDeduction: number;
     additionalDeduction: number;
