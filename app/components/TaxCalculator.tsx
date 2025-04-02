@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 interface FormData {
   salary: string;
@@ -70,22 +70,6 @@ interface ValidationErrors {
 }
 
 // Utility functions
-const formatCurrency = (value: string): string => {
-  // Remove any non-digit characters except decimal point
-  const cleanValue = value.replace(/[^\d.]/g, '');
-  
-  // Ensure only one decimal point
-  const parts = cleanValue.split('.');
-  if (parts.length > 2) return parts[0] + '.' + parts.slice(1).join('');
-  
-  // Limit to 2 decimal places
-  if (parts.length === 2) {
-    return parts[0] + '.' + parts[1].slice(0, 2);
-  }
-  
-  return cleanValue;
-};
-
 const formatNumberWithCommas = (value: string): string => {
   // If empty string, return as is
   if (!value) return '';
@@ -185,15 +169,6 @@ export default function TaxCalculator() {
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     
-    // Handle checkbox separately
-    if (name === 'isFirstTimeBuyer') {
-      setFormData(prev => ({
-        ...prev,
-        [name]: (e.target as HTMLInputElement).checked
-      }));
-      return;
-    }
-
     // Handle date input separately
     if (name === 'loanSanctionDate') {
       setFormData(prev => ({
@@ -236,6 +211,13 @@ export default function TaxCalculator() {
     }
   }, [validateInput]);
 
+  const handleCheckboxChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      isFirstTimeBuyer: e.target.checked
+    }));
+  }, []);
+
   const calculateHRAExemption = (
     salary: number,
     hra: number,
@@ -272,134 +254,142 @@ export default function TaxCalculator() {
     };
   };
 
-  const calculateTax = async () => {
+  const calculateTax = useCallback(async () => {
     setIsCalculating(true);
     setShowResults(false);
     
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    const values = {
-      salary: parseFloat(formData.salary.replace(/,/g, '')) || 0,
-      businessIncome: parseFloat(formData.businessIncome.replace(/,/g, '')) || 0,
-      rentalIncome: parseFloat(formData.rentalIncome.replace(/,/g, '')) || 0,
-      otherIncome: parseFloat(formData.otherIncome.replace(/,/g, '')) || 0,
-      section80C: parseFloat(formData.section80C.replace(/,/g, '')) || 0,
-      section80D: parseFloat(formData.section80D.replace(/,/g, '')) || 0,
-      section80TTA: parseFloat(formData.section80TTA.replace(/,/g, '')) || 0,
-      hra: parseFloat(formData.hra.replace(/,/g, '')) || 0,
-      actualRent: parseFloat(formData.actualRent.replace(/,/g, '')) || 0,
-      lta: parseFloat(formData.lta.replace(/,/g, '')) || 0,
-      nps: parseFloat(formData.nps.replace(/,/g, '')) || 0,
-      tds: parseFloat(formData.tds.replace(/,/g, '')) || 0,
-      homeLoanPrincipal: parseFloat(formData.homeLoanPrincipal.replace(/,/g, '')) || 0,
-      homeLoanInterest: parseFloat(formData.homeLoanInterest.replace(/,/g, '')) || 0,
-      propertyValue: parseFloat(formData.propertyValue.replace(/,/g, '')) || 0,
-    };
+    try {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const values = {
+        salary: parseFloat(formData.salary.replace(/,/g, '')) || 0,
+        businessIncome: parseFloat(formData.businessIncome.replace(/,/g, '')) || 0,
+        rentalIncome: parseFloat(formData.rentalIncome.replace(/,/g, '')) || 0,
+        otherIncome: parseFloat(formData.otherIncome.replace(/,/g, '')) || 0,
+        section80C: parseFloat(formData.section80C.replace(/,/g, '')) || 0,
+        section80D: parseFloat(formData.section80D.replace(/,/g, '')) || 0,
+        section80TTA: parseFloat(formData.section80TTA.replace(/,/g, '')) || 0,
+        hra: parseFloat(formData.hra.replace(/,/g, '')) || 0,
+        actualRent: parseFloat(formData.actualRent.replace(/,/g, '')) || 0,
+        lta: parseFloat(formData.lta.replace(/,/g, '')) || 0,
+        nps: parseFloat(formData.nps.replace(/,/g, '')) || 0,
+        tds: parseFloat(formData.tds.replace(/,/g, '')) || 0,
+        homeLoanPrincipal: parseFloat(formData.homeLoanPrincipal.replace(/,/g, '')) || 0,
+        homeLoanInterest: parseFloat(formData.homeLoanInterest.replace(/,/g, '')) || 0,
+        propertyValue: parseFloat(formData.propertyValue.replace(/,/g, '')) || 0,
+      };
 
-    const grossIncome = values.salary + values.businessIncome + 
-                       values.rentalIncome + values.otherIncome;
-    
-    // Calculate HRA exemption
-    const hraBreakdown = calculateHRAExemption(
-      values.salary,
-      values.hra,
-      values.actualRent,
-      formData.cityTier
-    );
+      const grossIncome = values.salary + values.businessIncome + 
+                         values.rentalIncome + values.otherIncome;
+      
+      // Calculate HRA exemption
+      const hraBreakdown = calculateHRAExemption(
+        values.salary,
+        values.hra,
+        values.actualRent,
+        formData.cityTier
+      );
 
-    // Standard deduction of ₹50,000 for salaried individuals (only in old regime)
-    const standardDeduction = values.salary > 0 ? 50000 : 0;
-    
-    const totalDeductions = standardDeduction + 
-                          Math.min(150000, values.section80C) + 
-                          Math.min(25000, values.section80D) + 
-                          Math.min(10000, values.section80TTA) + 
-                          hraBreakdown.eligible + 
-                          Math.min(values.lta, values.salary * 0.1) + // LTA limited to 10% of basic salary
-                          Math.min(50000, values.nps) +
-                          Math.min(values.homeLoanPrincipal, 150000) +
-                          Math.min(values.homeLoanInterest, 25000);
-    
-    const taxableIncome = Math.max(0, grossIncome - totalDeductions);
-    
-    // Calculate tax for old regime
-    let oldRegimeTax = 0;
+      // Standard deduction of ₹50,000 for salaried individuals (only in old regime)
+      const standardDeduction = values.salary > 0 ? 50000 : 0;
+      
+      const totalDeductions = standardDeduction + 
+                            Math.min(150000, values.section80C) + 
+                            Math.min(25000, values.section80D) + 
+                            Math.min(10000, values.section80TTA) + 
+                            hraBreakdown.eligible + 
+                            Math.min(values.lta, values.salary * 0.1) + // LTA limited to 10% of basic salary
+                            Math.min(50000, values.nps) +
+                            Math.min(values.homeLoanPrincipal, 150000) +
+                            Math.min(values.homeLoanInterest, 25000);
+      
+      const taxableIncome = Math.max(0, grossIncome - totalDeductions);
+      
+      // Calculate tax for old regime
+      let oldRegimeTax = 0;
 
-    // Old Regime Tax Calculation
-    if (taxableIncome <= 250000) {
-      oldRegimeTax = 0;
-    } else if (taxableIncome <= 500000) {
-      oldRegimeTax = (taxableIncome - 250000) * 0.05;
-    } else if (taxableIncome <= 750000) {
-      oldRegimeTax = 12500 + (taxableIncome - 500000) * 0.10;
-    } else if (taxableIncome <= 1000000) {
-      oldRegimeTax = 37500 + (taxableIncome - 750000) * 0.15;
-    } else if (taxableIncome <= 1250000) {
-      oldRegimeTax = 75000 + (taxableIncome - 1000000) * 0.20;
-    } else if (taxableIncome <= 1500000) {
-      oldRegimeTax = 125000 + (taxableIncome - 1250000) * 0.25;
-    } else {
-      oldRegimeTax = 187500 + (taxableIncome - 1500000) * 0.30;
+      // Old Regime Tax Calculation
+      if (taxableIncome <= 250000) {
+        oldRegimeTax = 0;
+      } else if (taxableIncome <= 500000) {
+        oldRegimeTax = (taxableIncome - 250000) * 0.05;
+      } else if (taxableIncome <= 750000) {
+        oldRegimeTax = 12500 + (taxableIncome - 500000) * 0.10;
+      } else if (taxableIncome <= 1000000) {
+        oldRegimeTax = 37500 + (taxableIncome - 750000) * 0.15;
+      } else if (taxableIncome <= 1250000) {
+        oldRegimeTax = 75000 + (taxableIncome - 1000000) * 0.20;
+      } else if (taxableIncome <= 1500000) {
+        oldRegimeTax = 125000 + (taxableIncome - 1250000) * 0.25;
+      } else {
+        oldRegimeTax = 187500 + (taxableIncome - 1500000) * 0.30;
+      }
+
+      // Apply 4% cess
+      oldRegimeTax = oldRegimeTax * 1.04;
+
+      // Section 87A rebate
+      if (grossIncome <= 500000) {
+        oldRegimeTax = 0;
+      }
+
+      // Calculate tax for new regime
+      let newRegimeTax = 0;
+      
+      // New Regime Tax Calculation
+      if (grossIncome <= 300000) {
+        newRegimeTax = 0;
+      } else if (grossIncome <= 600000) {
+        newRegimeTax = (grossIncome - 300000) * 0.05;
+      } else if (grossIncome <= 900000) {
+        newRegimeTax = 15000 + (grossIncome - 600000) * 0.10;
+      } else if (grossIncome <= 1200000) {
+        newRegimeTax = 45000 + (grossIncome - 900000) * 0.15;
+      } else if (grossIncome <= 1500000) {
+        newRegimeTax = 90000 + (grossIncome - 1200000) * 0.20;
+      } else {
+        newRegimeTax = 150000 + (grossIncome - 1500000) * 0.30;
+      }
+
+      // Apply 4% cess
+      newRegimeTax = newRegimeTax * 1.04;
+
+      // Section 87A rebate for new regime
+      if (grossIncome <= 700000) {
+        newRegimeTax = 0;
+      }
+
+      const tdsAmount = values.tds;
+      const remainingTaxOld = Math.max(0, oldRegimeTax - tdsAmount);
+      const remainingTaxNew = Math.max(0, newRegimeTax - tdsAmount);
+
+      setResult({
+        grossIncome,
+        totalDeductions,
+        taxableIncome,
+        taxAmount: Math.round(oldRegimeTax),
+        effectiveRate: grossIncome > 0 ? (oldRegimeTax / grossIncome) * 100 : 0,
+        newRegimeTax: Math.round(newRegimeTax),
+        newRegimeEffectiveRate: grossIncome > 0 ? (newRegimeTax / grossIncome) * 100 : 0,
+        favorableRegime: oldRegimeTax <= newRegimeTax ? 'old' : 'new',
+        tdsAmount,
+        remainingTaxOld,
+        remainingTaxNew,
+        hraBreakdown,
+        homeLoanBreakdown: {
+          principalDeduction: Math.min(values.homeLoanPrincipal, 150000),
+          interestDeduction: Math.min(values.homeLoanInterest, 25000),
+          additionalDeduction: 0,
+        },
+      });
+      
+      setShowResults(true);
+    } catch (error) {
+      console.error('Error calculating tax:', error);
+    } finally {
+      setIsCalculating(false);
     }
-
-    // Apply 4% cess
-    oldRegimeTax = oldRegimeTax * 1.04;
-
-    // Section 87A rebate
-    if (grossIncome <= 500000) {
-      oldRegimeTax = 0;
-    }
-
-    // Calculate tax for new regime
-    let newRegimeTax = 0;
-    
-    // New Regime Tax Calculation
-    if (grossIncome <= 300000) {
-      newRegimeTax = 0;
-    } else if (grossIncome <= 600000) {
-      newRegimeTax = (grossIncome - 300000) * 0.05;
-    } else if (grossIncome <= 900000) {
-      newRegimeTax = 15000 + (grossIncome - 600000) * 0.10;
-    } else if (grossIncome <= 1200000) {
-      newRegimeTax = 45000 + (grossIncome - 900000) * 0.15;
-    } else if (grossIncome <= 1500000) {
-      newRegimeTax = 90000 + (grossIncome - 1200000) * 0.20;
-    } else {
-      newRegimeTax = 150000 + (grossIncome - 1500000) * 0.30;
-    }
-
-    // Apply 4% cess
-    newRegimeTax = newRegimeTax * 1.04;
-
-    // Section 87A rebate for new regime
-    if (grossIncome <= 700000) {
-      newRegimeTax = 0;
-    }
-
-    const tdsAmount = values.tds;
-    const remainingTaxOld = Math.max(0, oldRegimeTax - tdsAmount);
-    const remainingTaxNew = Math.max(0, newRegimeTax - tdsAmount);
-
-    setResult({
-      grossIncome,
-      totalDeductions,
-      taxableIncome,
-      taxAmount: Math.round(oldRegimeTax),
-      effectiveRate: grossIncome > 0 ? (oldRegimeTax / grossIncome) * 100 : 0,
-      newRegimeTax: Math.round(newRegimeTax),
-      newRegimeEffectiveRate: grossIncome > 0 ? (newRegimeTax / grossIncome) * 100 : 0,
-      favorableRegime: oldRegimeTax <= newRegimeTax ? 'old' : 'new',
-      tdsAmount,
-      remainingTaxOld,
-      remainingTaxNew,
-      hraBreakdown,
-      homeLoanBreakdown: {
-        principalDeduction: Math.min(values.homeLoanPrincipal, 150000),
-        interestDeduction: Math.min(values.homeLoanInterest, 25000),
-        additionalDeduction: 0,
-      },
-    });
-  };
+  }, [formData]);
 
   return (
     <div className="max-w-4xl mx-auto p-4">
@@ -569,12 +559,7 @@ export default function TaxCalculator() {
                   id="isFirstTimeBuyer"
                   name="isFirstTimeBuyer"
                   checked={formData.isFirstTimeBuyer}
-                  onChange={(e) => handleInputChange({
-                    target: {
-                      name: 'isFirstTimeBuyer',
-                      value: e.target.checked.toString()
-                    }
-                  } as any)}
+                  onChange={handleCheckboxChange}
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
                 <label htmlFor="isFirstTimeBuyer" className="text-sm font-medium text-gray-700">
@@ -682,13 +667,19 @@ export default function TaxCalculator() {
       </div>
 
       <button
+        type="button"
         onClick={calculateTax}
-        className="w-full mt-8 bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition-colors text-lg font-semibold"
+        disabled={isCalculating}
+        className={`w-full mt-8 py-3 rounded-md text-lg font-semibold transition-colors ${
+          isCalculating 
+            ? 'bg-blue-400 cursor-not-allowed' 
+            : 'bg-blue-600 hover:bg-blue-700'
+        } text-white`}
       >
-        Calculate Tax
+        {isCalculating ? 'Calculating...' : 'Calculate Tax'}
       </button>
 
-      {result && (
+      {result && showResults && (
         <>
           <div className="mt-8">
             {/* Regime Explanation */}
