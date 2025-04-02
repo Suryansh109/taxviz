@@ -16,6 +16,11 @@ interface FormData {
   lta: string;
   nps: string;
   tds: string;
+  homeLoanPrincipal: string;
+  homeLoanInterest: string;
+  isFirstTimeBuyer: boolean;
+  propertyValue: string;
+  loanSanctionDate: string;
 }
 
 interface TaxResult {
@@ -36,6 +41,11 @@ interface TaxResult {
     excessRent: number;
     salaryPercent: number;
     eligible: number;
+  };
+  homeLoanBreakdown?: {
+    principalDeduction: number;
+    interestDeduction: number;
+    additionalDeduction: number;
   };
 }
 
@@ -75,6 +85,11 @@ export default function TaxCalculator() {
     lta: '',
     nps: '',
     tds: '',
+    homeLoanPrincipal: '',
+    homeLoanInterest: '',
+    isFirstTimeBuyer: false,
+    propertyValue: '',
+    loanSanctionDate: '',
   });
 
   const [errors, setErrors] = useState<ValidationErrors>({});
@@ -179,6 +194,8 @@ export default function TaxCalculator() {
       lta: parseFloat(formData.lta) || 0,
       nps: parseFloat(formData.nps) || 0,
       tds: parseFloat(formData.tds) || 0,
+      homeLoanPrincipal: parseFloat(formData.homeLoanPrincipal) || 0,
+      homeLoanInterest: parseFloat(formData.homeLoanInterest) || 0,
     };
 
     const grossIncome = values.salary + values.businessIncome + 
@@ -201,7 +218,9 @@ export default function TaxCalculator() {
                           Math.min(10000, values.section80TTA) + 
                           hraBreakdown.eligible + 
                           Math.min(values.lta, values.salary * 0.1) + // LTA limited to 10% of basic salary
-                          Math.min(50000, values.nps);
+                          Math.min(50000, values.nps) +
+                          Math.min(values.homeLoanPrincipal, 150000) +
+                          Math.min(values.homeLoanInterest, 25000);
     
     const taxableIncome = Math.max(0, grossIncome - totalDeductions);
     
@@ -275,7 +294,12 @@ export default function TaxCalculator() {
       tdsAmount,
       remainingTaxOld,
       remainingTaxNew,
-      hraBreakdown
+      hraBreakdown,
+      homeLoanBreakdown: {
+        principalDeduction: Math.min(values.homeLoanPrincipal, 150000),
+        interestDeduction: Math.min(values.homeLoanInterest, 25000),
+        additionalDeduction: 0,
+      },
     });
   };
 
@@ -473,6 +497,87 @@ export default function TaxCalculator() {
                   placeholder="0"
                 />
               </div>
+            </div>
+
+            <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Home Loan Benefits</h3>
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">Principal Repayment (80C)</label>
+                <input
+                  type="text"
+                  name="homeLoanPrincipal"
+                  value={formData.homeLoanPrincipal}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="0"
+                />
+                {errors.homeLoanPrincipal && (
+                  <p className="mt-1 text-sm text-red-600">{errors.homeLoanPrincipal}</p>
+                )}
+              </div>
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">Interest Payment (24b)</label>
+                <input
+                  type="text"
+                  name="homeLoanInterest"
+                  value={formData.homeLoanInterest}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="0"
+                />
+                {errors.homeLoanInterest && (
+                  <p className="mt-1 text-sm text-red-600">{errors.homeLoanInterest}</p>
+                )}
+              </div>
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="isFirstTimeBuyer"
+                  name="isFirstTimeBuyer"
+                  checked={formData.isFirstTimeBuyer}
+                  onChange={(e) => handleInputChange({
+                    target: {
+                      name: 'isFirstTimeBuyer',
+                      value: e.target.checked.toString()
+                    }
+                  } as any)}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label htmlFor="isFirstTimeBuyer" className="text-sm font-medium text-gray-700">
+                  First Time Home Buyer (80EE)
+                </label>
+              </div>
+              {formData.isFirstTimeBuyer && (
+                <>
+                  <div className="flex flex-col">
+                    <label className="text-sm font-medium text-gray-700 mb-1">Property Value</label>
+                    <input
+                      type="text"
+                      name="propertyValue"
+                      value={formData.propertyValue}
+                      onChange={handleInputChange}
+                      className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="0"
+                    />
+                    {errors.propertyValue && (
+                      <p className="mt-1 text-sm text-red-600">{errors.propertyValue}</p>
+                    )}
+                  </div>
+                  <div className="flex flex-col">
+                    <label className="text-sm font-medium text-gray-700 mb-1">Loan Sanction Date</label>
+                    <input
+                      type="date"
+                      name="loanSanctionDate"
+                      value={formData.loanSanctionDate}
+                      onChange={handleInputChange}
+                      className="border border-gray-300 rounded-md p-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                    {errors.loanSanctionDate && (
+                      <p className="mt-1 text-sm text-red-600">{errors.loanSanctionDate}</p>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
