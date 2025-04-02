@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback } from 'react';
 
 interface FormData {
   salary: string;
@@ -68,15 +68,6 @@ const formatCurrency = (value: string): string => {
   }
   
   return cleanValue;
-};
-
-const formatIndianCurrency = (amount: number): string => {
-  return new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  }).format(amount);
 };
 
 export default function TaxCalculator() {
